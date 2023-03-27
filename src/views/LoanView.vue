@@ -59,6 +59,9 @@ export default defineComponent({
               if (parseInt(this.loanPeriod) !== parseInt(response.data.loanPeriod)) {
                 document.getElementById("period").innerText = "New loan period:" + response.data.loanPeriod + " months"
               }
+              else {
+                document.getElementById("period").innerText = "Loan period:" + response.data.loanPeriod + " months"
+              }
             })
             .catch(e => alert("Wrong id or your account is in debt!"))
       }
