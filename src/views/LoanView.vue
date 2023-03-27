@@ -38,7 +38,6 @@ export default defineComponent({
       loanAmount: "",
       loanPeriod: "",
       money: null,
-      newLoanPeriod: null,
       decision: null
     }
   },
@@ -54,16 +53,26 @@ export default defineComponent({
           info.loanPeriod.trim() !== "") {
         axios.post("api/user/loan", info)
             .then(response => {
-              this.money = response.data.loanAmount
-              this.decision = response.data.decision
-              if (parseInt(this.loanPeriod) !== parseInt(response.data.loanPeriod)) {
-                document.getElementById("period").innerText = "New loan period:" + response.data.loanPeriod + " months"
+              if (response.data.decision === "We cannot give you loan!") {
+                alert("We cannot give you loan, your credit score is too low!")
+                this.decision = "Negative"
+                this.money = ""
               }
               else {
-                document.getElementById("period").innerText = "Loan period:" + response.data.loanPeriod + " months"
+                this.money = response.data.loanAmount
+                this.decision = response.data.decision
+                if (parseInt(this.loanPeriod) !== parseInt(response.data.loanPeriod)) {
+                  document.getElementById("period").innerText = "New loan period:" + response.data.loanPeriod + " months"
+                } else {
+                  document.getElementById("period").innerText = "Loan period:" + response.data.loanPeriod + " months"
+                }
               }
             })
-            .catch(e => alert("Wrong id or your account is in debt!"))
+            .catch(e => {
+              alert("Wrong id or your account is in debt!")
+              this.money = ""
+              this.decision = "Negative"
+            })
       }
     },
     plus(type) {
